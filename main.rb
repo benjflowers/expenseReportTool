@@ -38,4 +38,24 @@ statements.each do |statement|
   end
 end
 
-puts history
+months_reported = []
+
+history.each do |item|
+  months_reported.push(item.keys[0])
+end
+
+thing = {}
+
+months_reported.uniq.each do |month|
+  thing["#{month}"] = []
+end
+
+history.each do |item|
+  month = item.keys[0]
+  thing["#{month}"].push(item)
+end
+
+history = []
+history.push(thing)
+
+pp history
