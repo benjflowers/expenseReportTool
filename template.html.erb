@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <!-- etc... -->
+  </head>
+  <body>
+    <div class='firstSection'>
+      <ul>
+        <% @expense_summary.each do |expense_month| %>
+          <li>
+          <%= expense_month.keys[0] %>
+            <ul>
+              <% expense_month.values[0].each do |expense| %>
+                <li>
+                  <%= expense %>
+                </li>
+              <% end %>
+            </ul>
+          </li>
+        <% end  %>
+      </ul>
+    </div>
+  </body>
+</html>

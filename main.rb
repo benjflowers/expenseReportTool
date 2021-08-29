@@ -2,6 +2,8 @@ require 'csv'
 require 'pp'
 require 'date'
 require 'pry'
+require 'erb'
+require 'launchy'
 
 statements = Dir["./statements/*"]
 history = []
@@ -16,11 +18,12 @@ expense_summary = []
 # @return: String - "Jul"
 # @params: date - Array - ["06", "24", "2021"]
 def month_in(date)
+  date = date.split("/")
   # Date.new requires Y/M/D
   Date.new(
-    date.split("/")[2].to_i,
-    date.split("/")[0].to_i,
-    date.split("/")[1].to_i
+    date[2].to_i,
+    date[0].to_i,
+    date[1].to_i
   ).strftime("%b")
 end
 
@@ -124,5 +127,16 @@ statements.each do |statement|
   end
 end
 
-pp expense_summary
+@expense_summary = expense_summary
+
+# render template
+template = File.read('./template.html.erb')
+result = ERB.new(template).result(binding)
+
+# write result to file
+File.open('template.html', 'w+') do |f|
+  f.write result
+end
+
+Launchy.open("./template.html")
 # V2 ---------
