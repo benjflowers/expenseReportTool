@@ -4,23 +4,22 @@
     <!-- etc... -->
   </head>
   <body>
-    <div class='firstSection'>
-      <ul>
-        <% @expense_summary.each do |expense_month| %>
-          <li>
+    <div class='summary'>
+      <% @expense_summary.each do |expense_month| %>
+        <h1>
           <%= expense_month.keys[0] %>
-            <ul>
-              <% expense_month.values[0].each do |expense| %>
-                <li>
-                  Desc: <%= expense.keys[0] %> </br>
-                  Amount: <%= expense.values[0] %>
-                </li>
-                </br>
-              <% end %>
-            </ul>
-          </li>
-        <% end %>
-      </ul>
+        </h1>
+        <div class="monthSummary" id=<%= expense_month.keys[0]%>>
+          <ul>
+            <% expense_month.values[0].each do |expense| %>
+              <li>
+                Desc: <%= expense.keys[0] %> </br>
+                Amount: <%= expense.values[0] %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
     </div>
     <script src="./main.js"></script>
   </body>
