@@ -11,13 +11,16 @@
             <ul>
               <% expense_month.values[0].each do |expense| %>
                 <li>
-                  <%= expense %>
+                  Desc: <%= expense.keys[0] %> </br>
+                  Amount: <%= expense.values[0] %>
                 </li>
+                </br>
               <% end %>
             </ul>
           </li>
         <% end  %>
       </ul>
     </div>
+    <script src="./main.js"></script>
   </body>
 </html>
