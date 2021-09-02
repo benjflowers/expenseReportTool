@@ -5,19 +5,19 @@
   </head>
   <body>
     <div class='summary'>
-      <% @expense_summary.each do |expense_month| %>
-        <h1>
-          <%= expense_month.keys[0] %>
-        </h1>
-        <div class="monthSummary" id=<%= expense_month.keys[0]%>>
-          <ul>
-            <% expense_month.values[0].each do |expense| %>
+      <% @months.each do |month| %>
+        <div class="monthSummary" id=<%= month%>>
+          <h1>
+            <%= month %>
+          </h1>
+          <% @expense_summary.select{|expense| expense.month == month}.each do |expense|%>
+            <ul>
               <li>
-                Desc: <%= expense.keys[0] %> </br>
-                Amount: <%= expense.values[0] %>
+                Desc: <%= expense.details %> </br>
+                Amount: <%= expense.amount %>
               </li>
-            <% end %>
-          </ul>
+            </ul>
+          <% end %>
         </div>
       <% end %>
     </div>

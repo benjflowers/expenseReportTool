@@ -1,32 +1,9 @@
 require 'date'
 require 'csv'
 
+require_relative '../model/Expense'
+
 module Util
-  # Insert the Month hash into the final summary array
-  #
-  # @returns: nil
-  # @params: expense_summary - Array - []
-  # @params: satements - CSV - Object
-  def insert_months_into_summary(statements, expense_summary = [])
-    all_months = []
-    statements.each do |statement|
-      # entire table as an object
-      table = CSV.parse(File.read(statement), headers: true)
-
-      # Date column in table: Array []
-      date_column = table.by_col[1][3..-1]
-
-      month_in(date_column[0])
-      month_in(date_column[-1])
-
-      all_months.push(collected_months_in_column(date_column))
-    end
-
-    all_months.flatten.uniq.each do |month|
-      expense_summary.push({"#{month}": []})
-    end
-  end
-
   def populate_months_in_summary(statements, expense_summary)
     statements.each do |statement|
       data = []
@@ -58,16 +35,13 @@ module Util
           amount_index: 5
         )
       end
-  
-      expense_summary.each do |month|
-        monthly_expenses = data.select {|entry| entry.key?(month.keys[0])}
-        monthly_expenses.each do |expense|
-          month[month.keys[0]].push(expense[month.keys[0]])
-        end
+
+      data.each do |expense|
+        expense_summary.push(Expense.new(expense))
       end
     end
   end
-  
+
   private
   # Returns the string value of a month given its integer
   #
@@ -83,18 +57,6 @@ module Util
     ).strftime("%b")
   end
 
-  # Returns an array of the months included in the statement
-  #
-  # @returns: Array - ["Jul", "Jun"]
-  # @params: date_column - Array - ["06/24/2021"]
-  def collected_months_in_column(date_column)
-    collection = []
-    collection.push(month_in(date_column[0]))
-    collection.push(month_in(date_column[-1]))
-
-    collection
-  end
-
   # Extract the description and amounts from each row
   #
   # @returns: Array [{description: amount}]
@@ -108,9 +70,9 @@ module Util
         row[amount_index] = "0"
       end
       entries.push({
-        "#{month_in(row[date_index])}": {
-          "#{row[desc_index]}": row[amount_index]
-        }
+        details: row[desc_index].split(" ").first,
+        amount: row[amount_index].to_i,
+        month: month_in(row[date_index])
       })
     end
 

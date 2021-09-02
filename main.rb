@@ -15,16 +15,26 @@ require 'launchy'
 
 # Module imports
 require_relative 'lib/util'
+require_relative 'model/Expense'
 include Util
 #----------------------
 
 statements = Dir["./statements/*"]
 # Final return
-expense_summary = []
-insert_months_into_summary(statements, expense_summary)
-populate_months_in_summary(statements, expense_summary)
+@expense_summary = []
+populate_months_in_summary(statements, @expense_summary)
 
-@expense_summary = expense_summary
+@expense_summary.each do |expense|
+  expense.details = expense.details[0]
+end
+
+@months = []
+
+@expense_summary.each do |expense|
+  unless @months.include?(expense.month)
+    @months.push(expense.month)
+  end
+end
 
 # render template
 template = File.read('./template.html.erb')
