@@ -25,10 +25,10 @@ statements.each do |statement|
 end
 
 desc_history = V2::Parse.table_descs(tables)
-desc_history.uniq!.each do |desc_key|
-  desc_key = V2::Parse.count_rows_by_desc(desc_key, tables)
+counted_desc_history = desc_history.uniq.map do |desc_key|
+  V2::Parse.count_rows_by_desc(desc_key, tables)
 end
-puts desc_history
+puts counted_desc_history
 # puts history.flatten
 # puts tables
 

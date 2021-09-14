@@ -23,15 +23,13 @@ module V2
       end
 
       def count_rows_by_desc(desc_key, tables)
-        rows = []
+        count = 0
+
         tables.each do |table|
-          binding.pry
-          rows.push({ 
-            "#{desc_key}": table.select { |row| row[DESC_INDEX] == desc_key  }.count
-          })
+          count += table.select { |row| row[DESC_INDEX] == desc_key }.count
         end
 
-        return rows
+        return {"#{desc_key}": count}
       end
 
       private

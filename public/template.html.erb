@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <!-- etc... -->
+  </head>
+  <body>
+    <header>
+      <a href="./views/repeat_desc"> Repeat Places We spend money </a>
+    </header>
+    <div class='summary'>
+      <% @months.each do |month| %>
+        <div class="monthSummary" id=<%= month%>>
+          <h1>
+            <%= month %>
+          </h1>
+          <% @expense_summary.select{|expense| expense.month == month}.each do |expense|%>
+            <ul>
+              <li>
+                Desc: <%= expense.details %> </br>
+                Amount: <%= expense.amount %>
+              </li>
+            </ul>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <script src="./main.js"></script>
+  </body>
+</html>
