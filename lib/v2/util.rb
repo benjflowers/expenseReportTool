@@ -36,7 +36,11 @@ module V2
       # @table      -> Array
       def format_descriptions(table)
         table.each do |row|
-          row[2] = row[2].split(" ")[0]
+          if row[2].split(" ")[0].length < 3
+            row[2] = "#{row[2].split(" ")[0] + " " + row[2].split(" ")[1]}"
+          else
+            row[2] = row[2].split(" ")[0]
+          end
         end
       end
   
