@@ -14,35 +14,31 @@ require 'launchy'
 #---------------------
 
 # Module imports
-require_relative 'lib/util'
-require_relative 'model/Expense'
-include Util
+require_relative 'lib/v2/util'
+require_relative 'lib/v2/parse'
 #----------------------
 
 statements = Dir["./statements/*"]
-# Final return
-@expense_summary = []
-populate_months_in_summary(statements, @expense_summary)
-
-@expense_summary.each do |expense|
-  expense.details = expense.details[0]
+tables = []
+statements.each do |statement|
+  tables.push(V2::Util.parsed_table(statement))
 end
 
-@months = []
-
-@expense_summary.each do |expense|
-  unless @months.include?(expense.month)
-    @months.push(expense.month)
-  end
+desc_history = V2::Parse.table_descs(tables)
+desc_history.uniq!.each do |desc_key|
+  desc_key = V2::Parse.count_rows_by_desc(desc_key, tables)
 end
+puts desc_history
+# puts history.flatten
+# puts tables
 
-# render template
-template = File.read('./template.html.erb')
-result = ERB.new(template).result(binding)
+# # render template
+# template = File.read('./template.html.erb')
+# result = ERB.new(template).result(binding)
 
-# write result to file
-File.open('template.html', 'w+') do |f|
-  f.write result
-end
+# # write result to file
+# File.open('template.html', 'w+') do |f|
+#   f.write result
+# end
 
-Launchy.open("./template.html")
+# Launchy.open("./template.html")
