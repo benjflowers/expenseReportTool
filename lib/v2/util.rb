@@ -15,12 +15,24 @@ module V2
   
         # manipulate starting place of table to avoid irrelevant account info
         if table[0][0].include?("Account")
-          table = table[3..-1]
+          table = table[3..-1].select { |row| row[4].to_i < 0 }
           return formatted(table, type: BANK_TYPE)
         else
-          table = table[0..-1]
+          table = table[0..-1].select { |row| row[5].to_i < 0 }
           return formatted(table)
         end
+      end
+
+      def statement_types_count(statement, count)
+        table = CSV.parse(File.read(statement), headers: true)
+        binding.pry
+        if table[0].first[0].include?("Account") && table[0].first[0].split(" ")[3] == "CASHBACK"
+          count += 1
+        elsif !table[0][0].include?("Account")
+          count += 1
+        end
+
+        return count
       end
 
       private
@@ -36,7 +48,7 @@ module V2
       # @table      -> Array
       def format_descriptions(table)
         table.each do |row|
-          if row[2].split(" ")[0].length < 3
+          if row[2].split(" ")[0].length <= 3
             row[2] = "#{row[2].split(" ")[0] + " " + row[2].split(" ")[1]}"
           else
             row[2] = row[2].split(" ")[0]
@@ -46,7 +58,7 @@ module V2
   
       def format_date(table, type)
         table.each do |row|
-          if type == "bank"
+          if type == BANK_TYPE
             row[1] = month_as_str(row[1])
           else
             row[0] = month_as_str(row[0])

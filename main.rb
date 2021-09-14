@@ -18,17 +18,25 @@ require_relative 'lib/v2/util'
 require_relative 'lib/v2/parse'
 #----------------------
 
+# Data for the report
+# Very jank for now - but a "month" will always be a pair of statements
+# All expenses should be averaged by dividing occurence by .5 of @number_of_statements
+@number_of_statements = 0
+@expense_history = []
+
 statements = Dir["./statements/*"]
 tables = []
 statements.each do |statement|
+  @number_of_statements = V2::Util.statement_types_count(statement, @number_of_statements)
   tables.push(V2::Util.parsed_table(statement))
 end
 
 desc_history = V2::Parse.table_descs(tables)
-counted_desc_history = desc_history.uniq.map do |desc_key|
-  V2::Parse.count_rows_by_desc(desc_key, tables)
+desc_history.uniq.map do |desc_key|
+  @expense_history.push(V2::Parse.count_rows_by_desc(desc_key, tables))
 end
-puts counted_desc_history
+puts @expense_history
+puts @number_of_statements
 # puts history.flatten
 # puts tables
 
