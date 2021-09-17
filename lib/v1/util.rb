@@ -1,7 +1,7 @@
 require 'csv'
 # Functionality to serve each statement
 # Prioritizing the preservation of each statement and enabling access of all points
-module V2
+module V1
   module Util
     BANK_TYPE = "bank"
     # Parses through a local CSV file 
@@ -21,18 +21,6 @@ module V2
           table = table[0..-1].select { |row| row[5].to_i < 0 }
           return formatted(table)
         end
-      end
-
-      def statement_types_count(statement, count)
-        table = CSV.parse(File.read(statement), headers: true)
-        binding.pry
-        if table[0].first[0].include?("Account") && table[0].first[0].split(" ")[3] == "CASHBACK"
-          count += 1
-        elsif !table[0][0].include?("Account")
-          count += 1
-        end
-
-        return count
       end
 
       private

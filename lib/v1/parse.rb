@@ -1,4 +1,4 @@
-module V2
+module V1
   module Parse
     DESC_INDEX = 2
 
@@ -24,12 +24,24 @@ module V2
 
       def count_rows_by_desc(desc_key, tables)
         count = 0
+        total_spent = 0
 
         tables.each do |table|
-          count += table.select { |row| row[DESC_INDEX] == desc_key }.count
+          relevent_rows = table.select { |row| row[DESC_INDEX] == desc_key }
+
+          count += relevent_rows.count
+
+          relevent_rows.each do |row|
+            binding.pry
+            if row[0] == "Transaction Number"
+              total_spent += row[4].to_i
+            else
+              total_spent += row[5].to_i
+            end
+          end
         end
 
-        return {"#{desc_key}": count}
+        return {"#{desc_key}": {count: count, total_spent: total_spent}}
       end
 
       private
