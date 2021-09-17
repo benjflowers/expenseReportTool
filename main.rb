@@ -14,24 +14,18 @@ require 'launchy'
 #---------------------
 
 # Module imports
-require_relative 'lib/v1/util'
-require_relative 'lib/v1/parse'
+require_relative 'lib/v1/show_me'
 #----------------------
 
 # Data for the report
 @expense_history = []
 
-statements = Dir["./statements/*"]
-tables = []
-statements.each do |statement|
-  tables.push(V1::Util.parsed_table(statement))
-end
+tables = V1::ShowMe.tables_from(Dir["./statements/*"])
+months_reported = V1::ShowMe.months_from(tables)
 
-desc_history = V1::Parse.table_descs(tables)
-desc_history.uniq.map do |desc_key|
-  @expense_history.push(V1::Parse.count_rows_by_desc(desc_key, tables))
-end
-puts @expense_history
+puts months_reported
+
+# WE NEED ALL THIS STUFF
 # puts history.flatten
 # puts tables
 
